@@ -17,7 +17,7 @@ public class SpaceUserCredentials {
     }
 
     public static SpaceUserCredentials from (SpaceUser spaceUser){
-        return new SpaceUserCredentials(spaceUser.email, spaceUser.password);
+        return new SpaceUserCredentials(spaceUser.getEmail(), spaceUser.getPassword());
     }
 
     public SpaceUserCredentials setEmail(String email) {
@@ -31,11 +31,11 @@ public class SpaceUserCredentials {
     }
 
     public static SpaceUserCredentials getWithEmailOnly(SpaceUser spaceUser) {
-        return new SpaceUserCredentials().setEmail(spaceUser.email);
+        return new SpaceUserCredentials().setEmail(spaceUser.getEmail());
     }
 
     public static SpaceUserCredentials getWithPasswordOnly(SpaceUser spaceUser) {
-        return new SpaceUserCredentials().setPassword(spaceUser.password);
+        return new SpaceUserCredentials().setPassword(spaceUser.getPassword());
     }
 
 }

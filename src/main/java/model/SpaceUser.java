@@ -8,9 +8,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 public class SpaceUser {
     static Faker faker = new Faker(new Locale("en_EN"));
 
-    public final String email;
-    public final String password;
-    public final String name;
+    public String email;
+    public String password;
+    public String name;
 
     public SpaceUser(String email, String password, String name){
         this.email = email;
@@ -19,9 +19,9 @@ public class SpaceUser {
 
     }
 
-    /**public SpaceUser(){ пока закомменчу - идея ругается
+    public SpaceUser(){
 
-    }**/
+    }
 
     //Хелпер-метод, генерирующий данные
     public static SpaceUser getRandom() {
@@ -45,16 +45,16 @@ public class SpaceUser {
         return password;
     }
 
-    public String setEmail(String email) {
-        return email;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String setPassword(String password) {
-        return password;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String setName(String name) {
-        return name;
+    public void setName(String name) {
+        this.name = name;
     }
 
 

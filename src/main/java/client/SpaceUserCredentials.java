@@ -1,6 +1,9 @@
 package client;
 
+import com.github.javafaker.Faker;
 import model.SpaceUser;
+
+import java.util.Locale;
 
 public class SpaceUserCredentials {
 
@@ -30,12 +33,5 @@ public class SpaceUserCredentials {
         return this;
     }
 
-    public static SpaceUserCredentials getWithEmailOnly(SpaceUser spaceUser) {
-        return new SpaceUserCredentials().setEmail(spaceUser.getEmail());
-    }
-
-    public static SpaceUserCredentials getWithPasswordOnly(SpaceUser spaceUser) {
-        return new SpaceUserCredentials().setPassword(spaceUser.getPassword());
-    }
 
 }

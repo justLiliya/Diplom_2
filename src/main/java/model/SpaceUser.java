@@ -42,7 +42,7 @@ public class SpaceUser {
     }
 
     public String getName() {
-        return password;
+        return name;
     }
 
     public void setEmail(String email) {
@@ -58,7 +58,16 @@ public class SpaceUser {
     }
 
 
+    public String getWrongEmail() {
+        return faker.internet().emailAddress();
+    }
 
+    public String getWrongPassword() {
+        return RandomStringUtils.randomAlphabetic(7);
 
+    }
 
+    public String getWrongName() {
+        return faker.name().firstName();
+    }
 }

@@ -3,6 +3,9 @@ import model.SpaceUser;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
+import model.SpaceUserWithoutName;
+import model.SpaсeUserWithoutEmail;
+import model.SpaсeUserWithoutPassword;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +38,7 @@ public class CreateSpaceUserTest {
         assertEquals("Статус не 200 ок!",200, SpaceUserCreated.extract().statusCode());
         assertNotNull("accessToken oтсутствует!",SpaceUserCreated.extract().path("accessToken"));
         assertNotNull("refreshToken oтсутствует!",SpaceUserCreated.extract().path("refreshToken"));
-        assertEquals("Параметр success != true",spaсeUserLogined, true);
+        assertTrue("Параметр success при логине != true",spaсeUserLogined);
 
 
     }

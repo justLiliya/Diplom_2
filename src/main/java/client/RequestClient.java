@@ -13,6 +13,5 @@ public class RequestClient {
                 .setBaseUri("https://stellarburgers.nomoreparties.site")
                 .build();
 
-
     }
 }

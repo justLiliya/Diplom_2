@@ -3,6 +3,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import model.SpaceUser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,19 +17,31 @@ public class CreateOrderEmptyDataTest {
 
     HashMap<String, List> orderHash;
     List<String> ingredients = new ArrayList<>();
+    SpaceUser spaceUser = SpaceUser.getRandom();
     public CreateOrderClient createOrderClient;
     public IngredientsClient ingredientsClient;
     public SpaсeUserClient spaсeUserClient;
     public LoginUserClient loginUserClient;
     public ValidatableResponse createdUser;
+    private String accessToken;
 
     @Step
     @Before
     public void setUp() {
+        spaсeUserClient = new SpaсeUserClient();
+        loginUserClient = new LoginUserClient();
+        createdUser = spaсeUserClient.create(spaceUser);
+        accessToken = createdUser.extract().path("accessToken");
         createOrderClient = new CreateOrderClient();
         ingredientsClient = new IngredientsClient();
         orderHash = new HashMap<>();
         orderHash.put("ingredients", ingredients);
+    }
+
+    @Step
+    @After
+    public void tearDown() {
+        loginUserClient.delete(accessToken);
     }
 
 
@@ -49,10 +62,6 @@ public class CreateOrderEmptyDataTest {
     @DisplayName("Check new order unsuccessfully creation with empty data with auth")
     public void CreateOrderWithAuthTestEmptyData(){
         //Arrange
-        SpaceUser spaceUser = SpaceUser.getRandom();
-        spaсeUserClient = new SpaсeUserClient();
-        loginUserClient = new LoginUserClient();
-        createdUser = spaсeUserClient.create(spaceUser);
         loginUserClient.login(new SpaceUserCredentials(spaceUser.getEmail(), spaceUser.getPassword()));
         //Act
         ValidatableResponse createdOrder = createOrderClient.createOrder(orderHash);

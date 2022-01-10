@@ -6,6 +6,7 @@ import io.restassured.response.ValidatableResponse;
 import model.SpaceUserWithoutName;
 import model.SpaсeUserWithoutEmail;
 import model.SpaсeUserWithoutPassword;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,14 +15,26 @@ import static org.junit.Assert.*;
 public class CreateSpaceUserTest {
 
     private SpaсeUserClient spaсeUserClient;
-    private boolean spaсeUserLogined;
+    private static LoginUserClient loginUserClient;
+    private boolean isSuccess;
     private String spaсeUserToken;
     String expectedMessageWithoutParam = "Email, password and name are required fields";
+    private String accessToken;
+
+
 
     @Step
     @Before
     public void setUp() {
         spaсeUserClient = new SpaсeUserClient();
+        loginUserClient = new LoginUserClient();
+
+    }
+
+    @Step
+    @After
+    public void tearDown() {
+        loginUserClient.delete(accessToken);
     }
 
     @Test
@@ -30,15 +43,17 @@ public class CreateSpaceUserTest {
         //Arrange
         SpaceUser spaceUser = SpaceUser.getRandom();
         //Act
-        ValidatableResponse SpaceUserCreated = spaсeUserClient.create(spaceUser);
-        spaсeUserToken = SpaceUserCreated.extract().path("refreshToken");
+        ValidatableResponse spaceUserCreated = spaсeUserClient.create(spaceUser);
+        spaсeUserToken = spaceUserCreated.extract().path("refreshToken");
         spaсeUserClient.logout(spaсeUserToken);
-        spaсeUserLogined = spaсeUserClient.login(new SpaceUserCredentials(spaceUser.getEmail(), spaceUser.getPassword())).extract().path("success");
+        ValidatableResponse spaсeUserLogined = loginUserClient.login(new SpaceUserCredentials(spaceUser.getEmail(), spaceUser.getPassword()));
+        isSuccess = spaсeUserLogined.extract().path("success");
+        accessToken = spaсeUserLogined.extract().path("accessToken");
         //Assert
-        assertEquals("Статус не 200 ок!",200, SpaceUserCreated.extract().statusCode());
-        assertNotNull("accessToken oтсутствует!",SpaceUserCreated.extract().path("accessToken"));
-        assertNotNull("refreshToken oтсутствует!",SpaceUserCreated.extract().path("refreshToken"));
-        assertTrue("Параметр success при логине != true",spaсeUserLogined);
+        assertEquals("Статус не 200 ок!",200, spaceUserCreated.extract().statusCode());
+        assertNotNull("accessToken oтсутствует!",spaceUserCreated.extract().path("accessToken"));
+        assertNotNull("refreshToken oтсутствует!",spaceUserCreated.extract().path("refreshToken"));
+        assertTrue("Параметр success при логине != true",isSuccess);
 
 
     }

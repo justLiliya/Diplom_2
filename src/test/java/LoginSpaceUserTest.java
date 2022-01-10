@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import model.SpaceUser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +19,7 @@ public class LoginSpaceUserTest {
     private boolean spaсeUserLogined;
     private String message = "email or password are incorrect";
     private String spaсeUserToken;
+    private String accessToken;
 
 
 
@@ -27,9 +29,16 @@ public class LoginSpaceUserTest {
         loginUserClient = new LoginUserClient();
         ValidatableResponse user = loginUserClient.create(spaceUser);
         spaсeUserToken = user.extract().path("refreshToken");
+        accessToken = user.extract().path("accessToken");
         loginUserClient.logout(spaсeUserToken);
         Thread.sleep(1000);
     }
+
+    @Step
+     @After
+     public void tearDown() {
+        loginUserClient.delete(accessToken);
+     }
 
     @Test
     @DisplayName("Check user logined successfully")

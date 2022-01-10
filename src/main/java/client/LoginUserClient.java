@@ -25,7 +25,8 @@ public class LoginUserClient extends RequestClient{
     @Step
     public ValidatableResponse logout(String refreshToken){
 
-        return given()
+        return
+                given()
                 .spec(getBaseSpec())
                 .body(refreshToken)
                 .when()
@@ -37,12 +38,26 @@ public class LoginUserClient extends RequestClient{
     @Step
     public ValidatableResponse create(Object object){
 
-        return given()
+        return
+                given()
                 .spec(getBaseSpec())
                 .body(object)
                 .when()
                 .post(USER_PATH + "register")
                 .then();
 
+    }
+
+    public void delete(String accessToken) {
+        if (accessToken == null) {
+            return;
+        }
+                given()
+                .header("Authorization",accessToken)
+                .spec(getBaseSpec())
+                .when()
+                .delete(USER_PATH + "user")
+                .then()
+                .statusCode(202);
     }
 }

@@ -6,6 +6,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import model.SpaceUser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,6 +31,13 @@ public class ChangingSpaceUserDataTest {
         spaсeUserClient = new SpaсeUserClient();
         loginUserClient = new LoginUserClient();
         createdUser = spaсeUserClient.create(spaceUser);
+        accessUserToken = createdUser.extract().path("accessToken");
+    }
+
+    @Step
+    @After
+    public void tearDown() {
+        loginUserClient.delete(accessUserToken);
     }
 
 
@@ -37,7 +45,6 @@ public class ChangingSpaceUserDataTest {
     @DisplayName("Check successful editing all user data")
     public void editingSpaceUserAllInfo(){
         //Arrange
-        accessUserToken = createdUser.extract().path("accessToken");
         //Act
         expectedData = new SpaceUser(spaceUser.getWrongEmail(), spaceUser.getWrongPassword(), spaceUser.getWrongName());
         ValidatableResponse editedData = changingDataClient.editInfo(expectedData,accessUserToken);
@@ -73,7 +80,6 @@ public class ChangingSpaceUserDataTest {
         //Arrange
         SpaceUser spaceUser2 = SpaceUser.getRandom();
         ValidatableResponse createdUser2 = spaсeUserClient.create(spaceUser2);
-        accessUserToken = createdUser.extract().path("accessToken");
         String message = "User with such email already exists";
         //Act
         expectedData = new SpaceUser(spaceUser2.getEmail(), spaceUser.getPassword(), spaceUser.getName());

@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import model.SpaceUser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,6 +44,7 @@ public class LoginWithoutMandatoryParamsTest {
         loginUserClient = new LoginUserClient();
         Thread.sleep(1000);
     }
+
 
     @Test
     @DisplayName("Check login with different wrong datasets")

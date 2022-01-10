@@ -3,6 +3,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import model.SpaceUser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,6 +25,7 @@ public class GetOrdersFromIndividualUserTest {
     public CreateOrderClient createOrderClient;
     public IngredientsClient ingredientsClient;
     private OrdersUserClient ordersUserClient;
+    private String accessToken;
 
 
     @Step
@@ -37,9 +39,15 @@ public class GetOrdersFromIndividualUserTest {
         createOrderClient = new CreateOrderClient();
     }
 
+    @Step
+    @After
+    public void tearDown() {
+        loginUserClient.delete(accessToken);
+    }
+
     @Test
-    @DisplayName("Check getting list of 1 order for logined users With Orders")
-    public void getOrdersFromLoginedUserWithOrders(){
+    @DisplayName("Check getting list of 1 order for logined users With 1 Order")
+    public void getOrdersFromLoginedUserWith1Orders(){
         //Arrange
         accessUserToken = createdUser.extract().path("accessToken");
         SpaceUser logindData = new SpaceUser(spaceUser.getWrongEmail(), spaceUser.getWrongPassword(), spaceUser.getWrongName());

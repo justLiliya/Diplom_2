@@ -3,6 +3,7 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import model.SpaceUser;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +22,7 @@ public class CreateOrderTest {
     public SpaсeUserClient spaсeUserClient;
     public LoginUserClient loginUserClient;
     public ValidatableResponse createdUser;
+    private String accessToken;
 
     @Step
     @Before
@@ -37,6 +39,12 @@ public class CreateOrderTest {
         orderHash.put("ingredients", ingredients);
     }
 
+    @Step
+    @After
+    public void tearDown() {
+        loginUserClient.delete(accessToken);
+    }
+
 
     @Test
     @DisplayName("Check new order successfully creation With Authorization")
@@ -46,7 +54,8 @@ public class CreateOrderTest {
         spaсeUserClient = new SpaсeUserClient();
         loginUserClient = new LoginUserClient();
         createdUser = spaсeUserClient.create(spaceUser);
-        loginUserClient.login(new SpaceUserCredentials(spaceUser.getEmail(), spaceUser.getPassword()));
+        ValidatableResponse logined = loginUserClient.login(new SpaceUserCredentials(spaceUser.getEmail(), spaceUser.getPassword()));
+        accessToken = logined.extract().path("accessToken");
         //Act
         ValidatableResponse createdOrder = createOrderClient.createOrder(orderHash);
         //Assert
@@ -62,6 +71,7 @@ public class CreateOrderTest {
     public void createOrderWithoutAuthTest(){
         //Act
         ValidatableResponse createdOrder = createOrderClient.createOrder(orderHash);
+        accessToken = createdOrder.extract().path("accessToken");
         //Assert
         assertEquals("Статус не 400 ок!",401, createdOrder.extract().statusCode());
         assertFalse("Параметр success не соответствует требованиям!",createdOrder.extract().path("success"));

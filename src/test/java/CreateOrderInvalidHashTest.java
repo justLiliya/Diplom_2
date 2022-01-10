@@ -4,6 +4,7 @@ import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import model.SpaceUser;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 public class CreateOrderInvalidHashTest {
     HashMap<String, List> orderHash;
@@ -22,16 +22,29 @@ public class CreateOrderInvalidHashTest {
     public SpaсeUserClient spaсeUserClient;
     public LoginUserClient loginUserClient;
     public ValidatableResponse createdUser;
+    private String accessToken;
+    SpaceUser spaceUser = SpaceUser.getRandom();
 
     @Step
     @Before
     public void setUp() {
         createOrderClient = new CreateOrderClient();
         ingredientsClient = new IngredientsClient();
+        spaсeUserClient = new SpaсeUserClient();
+        loginUserClient = new LoginUserClient();
+        createdUser = spaсeUserClient.create(spaceUser);
+        accessToken = createdUser.extract().path("accessToken");
         orderHash = new HashMap<>();
         String invalid = RandomStringUtils.randomAlphanumeric(10,20);
         ingredients.add(invalid);
         orderHash.put("ingredients", ingredients);
+
+    }
+
+    @Step
+    @After
+    public void tearDown() {
+        loginUserClient.delete(accessToken);
     }
 
 
@@ -49,10 +62,6 @@ public class CreateOrderInvalidHashTest {
     @DisplayName("Check new order unsuccessfully creation with invalid hash with auth")
     public void CreateOrderWithAuthInvalidDataTest(){
         //Arrange
-        SpaceUser spaceUser = SpaceUser.getRandom();
-        spaсeUserClient = new SpaсeUserClient();
-        loginUserClient = new LoginUserClient();
-        createdUser = spaсeUserClient.create(spaceUser);
         loginUserClient.login(new SpaceUserCredentials(spaceUser.getEmail(), spaceUser.getPassword()));
         //Act
         ValidatableResponse createdOrder = createOrderClient.createOrder(orderHash);

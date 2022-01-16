@@ -42,6 +42,9 @@ public class CreateOrderTest {
     @Step
     @After
     public void tearDown() {
+        if (accessToken == null){
+            return;
+        }
         loginUserClient.delete(accessToken);
     }
 
@@ -71,11 +74,8 @@ public class CreateOrderTest {
     public void createOrderWithoutAuthTest(){
         //Act
         ValidatableResponse createdOrder = createOrderClient.createOrder(orderHash);
-        accessToken = createdOrder.extract().path("accessToken");
         //Assert
-        assertEquals("Статус не 400 ок!",401, createdOrder.extract().statusCode());
-        assertFalse("Параметр success не соответствует требованиям!",createdOrder.extract().path("success"));
-        assertEquals("Сообщение не соответствует требованиям!","You should be authorised",createdOrder.extract().path("message"));
+        assertEquals("Статус не 401 ок!",401, createdOrder.extract().statusCode());
 
     }
 

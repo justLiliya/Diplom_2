@@ -77,7 +77,7 @@ public class CreateSpaceUserTest {
     @DisplayName("Check user without password not created")
     public void createSpaceUserWithoutPasswordTest(){
         //Arrange
-        SpaсeUserWithoutPassword spaсeUserWithoutPassword = SpaсeUserWithoutPassword.getRandom();;
+        SpaсeUserWithoutPassword spaсeUserWithoutPassword = SpaсeUserWithoutPassword.getRandom();
         //Act
         ValidatableResponse SpaceUserWithoutPasswordCreated = spaсeUserClient.create(spaсeUserWithoutPassword);
         //Assert

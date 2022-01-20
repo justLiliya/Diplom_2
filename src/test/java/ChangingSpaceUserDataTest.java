@@ -45,14 +45,16 @@ public class ChangingSpaceUserDataTest {
     @DisplayName("Check successful editing all user data")
     public void editingSpaceUserAllInfo(){
         //Arrange
-        //Act
         expectedData = new SpaceUser(spaceUser.getWrongEmail(), spaceUser.getWrongPassword(), spaceUser.getWrongName());
+        //Act
         ValidatableResponse editedData = changingDataClient.editInfo(expectedData,accessUserToken);
-        ValidatableResponse editedUserLogined = loginUserClient.login(new SpaceUserCredentials(expectedData.getEmail(), expectedData.getPassword()));
         //Assert
         assertEquals("Статус-код не == 200!",200,editedData.extract().statusCode());
         assertEquals("Емейл после редактирования не совпадает с введенными данными",expectedData.email,editedData.extract().path("user.email"));
         assertEquals("Имя после редактирования не совпадает с введенными данными", expectedData.name,editedData.extract().path("user.name"));
+        //Act
+        ValidatableResponse editedUserLogined = loginUserClient.login(new SpaceUserCredentials(expectedData.getEmail(), expectedData.getPassword()));
+        //Assert
         assertEquals("Юзер не залогинился с новыми данными!",200,editedUserLogined.extract().statusCode());
     }
 
@@ -66,11 +68,13 @@ public class ChangingSpaceUserDataTest {
         //Act
         expectedData = new SpaceUser(spaceUser.getWrongEmail(), spaceUser.getWrongPassword(), spaceUser.getWrongName());
         ValidatableResponse editedData = changingDataClient.editInfoWithoutToken(expectedData);
-        ValidatableResponse editedUserLogined = loginUserClient.login(new SpaceUserCredentials(expectedData.getEmail(), expectedData.getPassword()));
         //Assert
         assertEquals("Статус-код не == 401!",401,editedData.extract().statusCode());
         assertFalse("Параметр success != false",editedData.extract().path("success"));
         assertEquals("Сообщение не соответствует требованиям!",message,editedData.extract().path("message"));
+        //Act
+        ValidatableResponse editedUserLogined = loginUserClient.login(new SpaceUserCredentials(expectedData.getEmail(), expectedData.getPassword()));
+        //Assert
         assertEquals("Юзер залогинился с несуществующими данными!",401,editedUserLogined.extract().statusCode());
     }
 
@@ -84,11 +88,13 @@ public class ChangingSpaceUserDataTest {
         //Act
         expectedData = new SpaceUser(spaceUser2.getEmail(), spaceUser.getPassword(), spaceUser.getName());
         ValidatableResponse editedData = changingDataClient.editInfo(expectedData,accessUserToken);
-        ValidatableResponse editedUserLogined = loginUserClient.login(new SpaceUserCredentials(expectedData.getEmail(), spaceUser.getPassword()));
         //Assert
         assertEquals("Статус-код не == 403!",403,editedData.extract().statusCode());
         assertFalse("Параметр success != false",editedData.extract().path("success"));
         assertEquals("Сообщение не соответствует требованиям!",message,editedData.extract().path("message"));
+        //Act
+        ValidatableResponse editedUserLogined = loginUserClient.login(new SpaceUserCredentials(expectedData.getEmail(), spaceUser.getPassword()));
+        //Assert
         assertEquals("Юзер залогинился с несуществующими данными!",401,editedUserLogined.extract().statusCode());
     }
 
